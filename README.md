@@ -3,7 +3,7 @@ TODO: Readme in construction
 
 install instruction:
 ```shell
-pip install 
+pip install [--verbose] git+https://github.com/Carsley-and-Associates/cs-dashboard-support.git 
 ```
 
 sample usage:
