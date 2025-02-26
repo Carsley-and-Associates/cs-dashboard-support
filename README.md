@@ -3,8 +3,9 @@ TODO: Readme in construction
 
 install instruction:
 ```shell
-pip install [--verbose] git+https://github.com/Carsley-and-Associates/cs-dashboard-support.git 
+pip install [--verbose] git+https://github.com/Carsley-and-Associates/cs-dashboard-support.git[@branch] 
 ```
+need reinstall to show the updates
 
 sample usage:
 ```python

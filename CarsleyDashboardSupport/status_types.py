@@ -39,7 +39,7 @@ class StatusEntry:
                 return "".join(lines[-5:])  # TODO: snapshot?
             return ""
 
-        self.time = datetime.utcnow().isoformat() if not time else time
+        self.time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S") if not time else time
         self.status = status
         self.service_id = service_id
         self.client_id = client_id
