@@ -2,18 +2,19 @@ import threading
 import time
 import requests
 from CarsleyDashboardSupport.log_status import *
+from CarsleyDashboardSupport.config import *
 
 
 #TODO: url config - by package or by servers?
 
-def _send_request(status_json, handshake_url, receive_url):
+def _send_request(status_json):
     try:
-        response = requests.get(handshake_url, timeout=5)
+        response = requests.get(DASHBOARD_HANDSHAKE_URL, timeout=5)
         if response.status_code != 200:
-            return {"error": f"Remote dashboard at {handshake_url} is not available. Exception: {str(response)}"}
+            return {"error": f"Remote dashboard at {DASHBOARD_HANDSHAKE_URL} is not available. Exception: {str(response)}"}
     except requests.RequestException as e:
         return {"error": f"Remote dashboard is unreachable. Exception: {str(e)}"}
-
+    receive_url = DASHBOARD_URL + response.json()["receive_url"]
     try:
         response = requests.post(receive_url, json=status_json, timeout=5)
         if response.status_code == 201:
@@ -25,8 +26,6 @@ def _send_request(status_json, handshake_url, receive_url):
 
 
 def sync_status_now(
-        handshake_url: str,
-        receive_url: str,
         cache_file_path: str,
         new_status: StatusEntry,
         include_cache: bool = True,
@@ -52,7 +51,7 @@ def sync_status_now(
     if not cached_statuses:
         return "There is no status to sync."
 
-    result = _send_request(cached_statuses, handshake_url, receive_url)
+    result = _send_request(cached_statuses)
     if result and "error" in result:
         raise StatusSyncError(result["error"])
 
@@ -66,7 +65,6 @@ def start_sync_thread(
         default_update_status: StatusEntry,
         interval: int,
         handshake_url: str,
-        receive_url: str,
         cache_file_path: str,
         include_cache: bool = True,
 ) -> threading.Thread:
@@ -75,8 +73,6 @@ def start_sync_thread(
             default_update_status.time = datetime.utcnow().isoformat()
             try:
                 sync_status_now(
-                    handshake_url,
-                    receive_url,
                     cache_file_path,
                     default_update_status,
                     include_cache,
