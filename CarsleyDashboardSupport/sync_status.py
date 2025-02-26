@@ -16,7 +16,7 @@ def _send_request(status_json, handshake_url, receive_url):
 
     try:
         response = requests.post(receive_url, json=status_json, timeout=5)
-        if response.status_code == 200:
+        if response.status_code == 201:
             return {"message": f"Successfully sent status to {receive_url}."}
         else:
             return {"error": f"Failed to send status to remote manager {receive_url}. Exception: {str(response)}"}
