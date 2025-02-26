@@ -64,7 +64,6 @@ def sync_status_now(
 def start_sync_thread(
         default_update_status: StatusEntry,
         interval: int,
-        handshake_url: str,
         cache_file_path: str,
         include_cache: bool = True,
 ) -> threading.Thread:
