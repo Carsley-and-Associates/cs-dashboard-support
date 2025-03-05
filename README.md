@@ -26,4 +26,9 @@ Public Interfaces:
         If succeeded, remove the cached statuses.  
     
     schedule_status_sync():
-        Create and return a thread that calls sync_status at specified time interval. 
+        Create and return a thread that calls sync_status at specified time interval.
+
+Structure:
+    config - 
+        dashboard_url: base url
+        dashboard_handshake_url: will return necessary endpoints. 

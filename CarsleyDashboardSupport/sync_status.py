@@ -11,7 +11,8 @@ def _send_request(status_json):
     try:
         response = requests.get(DASHBOARD_HANDSHAKE_URL, timeout=5)
         if response.status_code != 200:
-            return {"error": f"Remote dashboard at {DASHBOARD_HANDSHAKE_URL} is not available. Exception: {str(response)}"}
+            return {
+                "error": f"Remote dashboard at {DASHBOARD_HANDSHAKE_URL} is not available. Exception: {str(response)}"}
     except requests.RequestException as e:
         return {"error": f"Remote dashboard is unreachable. Exception: {str(e)}"}
     receive_url = DASHBOARD_URL + response.json()["receive_url"]
@@ -69,7 +70,7 @@ def start_sync_thread(
 ) -> threading.Thread:
     def sync_loop():
         while True:
-            default_update_status.time = datetime.utcnow().isoformat()
+            default_update_status.time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S")
             try:
                 sync_status_now(
                     cache_file_path,
@@ -85,6 +86,16 @@ def start_sync_thread(
     sync_thread.start()
 
     return sync_thread
+
+
+def attempt_status_sync(status: StatusEntry, status_log_file_path: str):
+    try:
+        sync_status_now(cache_file_path=status_log_file_path,
+                        new_status=status)
+    except Exception as e:
+        log_status(status_entry=status,
+                   cache_file_path=status_log_file_path, )
+        print(f"An error occurred while syncing status: {e}")
 
 
 class StatusSyncError(Exception):
