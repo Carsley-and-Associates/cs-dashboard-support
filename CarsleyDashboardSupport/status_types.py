@@ -40,6 +40,13 @@ class StatusEntry:
                 return "".join(["Last 10 lines of the system log file:\n>>>>>>>>>>\n"] + lines[-10:])
             return ""
 
+        def get_function_name():
+            stack = inspect.stack()
+            for frame in stack[1:]:
+                if frame.function not in ("<module>", "__init__"):
+                    return frame.function
+            return "<unknown>"
+
         self.time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S") if not time else time
         self.status = status
         self.service_id = service_id
@@ -49,7 +56,7 @@ class StatusEntry:
         if status != StatusType.OK:
             self.error_message = error_message
             self.severity = severity
-            self.function = function_name or inspect.currentframe().f_back.f_code.co_name
+            self.function = function_name or get_function_name()
             self.log_snapshot = get_log_snapshot(system_log_path) if system_log_path else ""
 
     def as_dict(self):
