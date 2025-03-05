@@ -37,7 +37,7 @@ class StatusEntry:
             if log_file and os.path.exists(log_file):
                 with open(log_file, "r") as f:
                     lines = f.readlines()
-                return "".join(["Last 10 lines of the system log file:\n>>>>>>>>>>\n", lines[-10:]])  # Snapshot for the last 10 lines
+                return "".join(["Last 10 lines of the system log file:\n>>>>>>>>>>\n"] + lines[-10:])
             return ""
 
         self.time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S") if not time else time
