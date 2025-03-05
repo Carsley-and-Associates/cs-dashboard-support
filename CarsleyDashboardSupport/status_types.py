@@ -1,3 +1,4 @@
+import inspect
 import os
 from enum import Enum
 import json
@@ -36,7 +37,7 @@ class StatusEntry:
             if os.path.exists(log_file):
                 with open(log_file, "r") as f:
                     lines = f.readlines()
-                return "".join(lines[-5:])  # TODO: snapshot?
+                return "".join(lines[-10:])  # Snapshot for the last 10 lines
             return ""
 
         self.time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S") if not time else time
@@ -48,29 +49,25 @@ class StatusEntry:
         if status != StatusType.OK:
             self.error_message = error_message
             self.severity = severity
-            self.function = function_name
+            self.function = function_name or inspect.currentframe().f_back.f_code.co_name
             self.log_snapshot = get_log_snapshot(system_log_path)
 
     def as_dict(self):
-        if self.status == StatusType.OK:
-            return {
-                "time": self.time,
-                "status": self.status.value,
-                "service_id": self.service_id,
-                "client_id": self.client_id,
-                "environment": self.environment,
-            }
-        return {
+        data = {
             "time": self.time,
             "status": self.status.value,
             "service_id": self.service_id,
             "client_id": self.client_id,
             "environment": self.environment,
-            "error_message": self.error_message,
-            "severity": self.severity.value if self.severity else None,
-            "function": self.function,
-            "log_snapshot": self.log_snapshot if hasattr(self, "log_snapshot") else None
         }
+        if self.status != StatusType.OK:
+            data.update({
+                "error_message": self.error_message,
+                "severity": self.severity.value if self.severity else None,
+                "function": self.function,
+                "log_snapshot": getattr(self, "log_snapshot", None),
+            })
+        return data
 
     def as_json_string(self):
         return json.dumps(self.as_dict(), indent=4)
