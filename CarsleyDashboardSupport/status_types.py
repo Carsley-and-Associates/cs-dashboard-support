@@ -34,7 +34,7 @@ class StatusEntry:
             system_log_path: Optional[str] = None,
     ):
         def get_log_snapshot(log_file: str):
-            if os.path.exists(log_file):
+            if log_file and os.path.exists(log_file):
                 with open(log_file, "r") as f:
                     lines = f.readlines()
                 return "".join(lines[-10:])  # Snapshot for the last 10 lines
@@ -50,7 +50,7 @@ class StatusEntry:
             self.error_message = error_message
             self.severity = severity
             self.function = function_name or inspect.currentframe().f_back.f_code.co_name
-            self.log_snapshot = get_log_snapshot(system_log_path)
+            self.log_snapshot = get_log_snapshot(system_log_path) if system_log_path else ""
 
     def as_dict(self):
         data = {
