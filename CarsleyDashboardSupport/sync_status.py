@@ -15,7 +15,7 @@ def _send_request(status_json):
                 "error": f"Remote dashboard at {DASHBOARD_HANDSHAKE_URL} is not available. Exception: {str(response)}"}
     except requests.RequestException as e:
         return {"error": f"Remote dashboard is unreachable. Exception: {str(e)}"}
-    receive_url = DASHBOARD_URL + response.json()["receive_url"]
+    receive_url = DASHBOARD_URL + response.json()["receive_status_url"]
     try:
         response = requests.post(receive_url, json=status_json, timeout=5)
         if response.status_code == 201:
