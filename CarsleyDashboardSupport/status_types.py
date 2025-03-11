@@ -37,7 +37,7 @@ class StatusEntry:
             if log_file and os.path.exists(log_file):
                 with open(log_file, "r") as f:
                     lines = f.readlines()
-                return "".join(["Last 10 lines of the system log file:\n>>>>>>>>>>\n"] + lines[-10:])
+                return lines[-10:]
             return ""
 
         def get_function_name():
