@@ -1,2 +1,2 @@
-DASHBOARD_URL = "http://127.0.0.1:8000"
+DASHBOARD_URL = "http://2576-67-194-232-175.ngrok-free.app"
 DASHBOARD_HANDSHAKE_URL = DASHBOARD_URL + "/handshake/"
